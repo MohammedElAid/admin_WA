@@ -1,20 +1,32 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 import { Modal } from "@/components/ui/modal"
 import { useStoreModal } from '@/hooks/use-store-modal'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '../ui/button'
 
 
-const formSchema = z.object({ name: z.string().min(1) })
+
+const formSchema = z.object({
+    name: z.string().min(1, 'Required')
+})
 
 function StoreModal() {
+    const [loading, setLoading] = useState(false)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -23,8 +35,18 @@ function StoreModal() {
         }
     })
 
-    const onSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value)
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        try {
+            setLoading(true)
+            const response = await axios.post('/api/stores', values)
+            console.log(response.data)
+            toast.success('Store created')
+        } catch (error) {
+            toast.error('Something went wrong')
+        }
+        finally {
+            setLoading(false)
+        }
 
     }
     const { isOpen, onOpen, onClose } = useStoreModal();
@@ -47,8 +69,13 @@ function StoreModal() {
                                     <FormItem>
                                         <FormLabel>Name</FormLabel>
                                         <FormControl>
-                                            <Input placeholder='E-commerce' {...field} />
+                                            <Input
+                                                disabled={loading}
+                                                placeholder='E-commerce'
+                                                {...field}
+                                            />
                                         </FormControl>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -56,9 +83,10 @@ function StoreModal() {
                                 <Button
                                     variant='outline'
                                     onClick={onClose}
+                                    disabled={loading}
                                 >
                                     Cancel</Button>
-                                <Button type='submit'>Continue</Button>
+                                <Button disabled={loading} type='submit'>Continue</Button>
                             </div>
 
                         </form>
