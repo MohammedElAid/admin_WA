@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Store } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
-
+import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
 
 
 import Heading from "@/components/ui/heading"
@@ -14,6 +15,10 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
+import AlertModal from "@/components/modals/alert-modal";
+import ApiAlert from "@/components/ui/api-alert";
+
 
 
 interface SettingsFormProps {
@@ -33,18 +38,51 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-
-
     const form = useForm<SettingsFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData
     })
+
+    const params = useParams();
+    const router = useRouter();
     const onSubmit = async (data: SettingsFormValues) => {
-        console.log(data)
+        try {
+            setLoading(true)
+            await axios.patch(`/api/stores/${params.storeId}`, data)
+
+            router.refresh();
+            toast.success("Store updated")
+
+        } catch (error) {
+            toast.error("Something went wrong")
+        } finally {
+            setLoading(false)
+        }
+    }
+
+
+    const OnDelete = async () => {
+        try {
+            await axios.delete(`/api/stores/${params.storeId}`)
+            router.refresh()
+            router.push('/')
+            toast.success("Store deleted")
+        } catch (error) {
+            toast.error("Make sur you removed all products ans categories fist")
+        } finally {
+            setLoading(false)
+            setOpen(false)
+        }
     }
 
     return (
         <>
+            <AlertModal
+                isOpen={open}
+                onClose={() => setOpen(false)}
+                onConfirm={OnDelete}
+                loading={loading}
+            />
             <div className="flex items-center justify-between">
                 <Heading
                     title="Settings"
@@ -93,6 +131,8 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
                     </Button>
                 </form>
             </Form>
+            <Separator />
+            <ApiAlert title="test" description="test-desc" />
 
 
         </>
