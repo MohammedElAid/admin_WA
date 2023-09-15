@@ -10,6 +10,7 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 
 
+
 import Heading from "@/components/ui/heading"
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
@@ -18,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import AlertModal from "@/components/modals/alert-modal";
 import ApiAlert from "@/components/ui/api-alert";
+import useOrigin from "@/hooks/use-origin";
 
 
 
@@ -45,6 +47,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 
     const params = useParams();
     const router = useRouter();
+    const origin = useOrigin();
     const onSubmit = async (data: SettingsFormValues) => {
         try {
             setLoading(true)
@@ -117,7 +120,6 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
                                     </FormControl>
                                     <FormMessage />
 
-
                                 </FormItem>
                             )}
                         />
@@ -132,7 +134,10 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
                 </form>
             </Form>
             <Separator />
-            <ApiAlert title="test" description="test-desc" />
+            <ApiAlert
+                title="NEXT_PUBLIC_API_URL"
+                description={`${origin}/api/stores/${params.storeId}`}
+                variant="public" />
 
 
         </>
