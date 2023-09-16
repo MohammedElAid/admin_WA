@@ -20,11 +20,17 @@ export default function MainNav({
 
         },
         {
+            href: `/${params.storeId}/billboards`,
+            label: 'billboards',
+            active: pathname === `/${params.storeId}/billboards`
+
+        },
+        {
             href: `/${params.storeId}/settings`,
             label: 'Settings',
             active: pathname === `/${params.storeId}/settings`
 
-        }
+        },
     ]
     return (
         <nav
