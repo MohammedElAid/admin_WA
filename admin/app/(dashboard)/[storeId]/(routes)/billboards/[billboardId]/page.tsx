@@ -1,5 +1,7 @@
 import React from 'react'
 import prismadb from '@/lib/prismadb'
+import BillboardForm from "./components/billboard-form";
+
 
 const BillBoardpage = async ({
     params
@@ -11,8 +13,12 @@ const BillBoardpage = async ({
     })
 
     return (
-        <div>
-            This is a form for Billboard
+        <div className='flex-col'>
+            <div className='flex-1 space-y-4 p-8 pt-6'>
+                <BillboardForm initialData={billboard} />
+
+            </div>
+
         </div>
     )
 }
