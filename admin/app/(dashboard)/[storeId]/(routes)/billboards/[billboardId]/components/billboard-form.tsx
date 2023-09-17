@@ -18,8 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import AlertModal from "@/components/modals/alert-modal";
-import ApiAlert from "@/components/ui/api-alert";
-import useOrigin from "@/hooks/use-origin";
+import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
     label: z.string().min(1, "Required"),
@@ -47,7 +46,6 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
 
     const params = useParams();
     const router = useRouter();
-    const origin = useOrigin();
 
     const title = initialData ? "Edit Billboard" : "Create Billboard"
     const description = initialData ? "Edit a Billboard" : "Add new Billboard"
@@ -66,10 +64,15 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
     const onSubmit = async (data: BillboardFormValues) => {
         try {
             setLoading(true)
-            await axios.patch(`/api/stores/${params.storeId}`, data)
+            if (initialData) {
+                await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data)
+            } else {
+                await axios.post(`/api/${params.storeId}/billboards`, data)
 
+            }
             router.refresh();
-            toast.success("Store updated")
+            router.push(`/${params.storeId}/billboards`)
+            toast.success(toastMessage)
 
         } catch (error) {
             toast.error("Something went wrong")
@@ -81,12 +84,12 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
 
     const OnDelete = async () => {
         try {
-            await axios.delete(`/api/stores/${params.storeId}`)
+            await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`)
             router.refresh()
-            router.push('/')
-            toast.success("Store deleted")
+            router.push(`/${params.storeId}/billboards`)
+            toast.success("Billboard deleted")
         } catch (error) {
-            toast.error("Make sur you removed all products ans categories fist")
+            toast.error("Make sur you removed all categories using Billboard first")
         } finally {
             setLoading(false)
             setOpen(false)
@@ -119,6 +122,25 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+                    <FormField
+                        control={form.control}
+                        name="imageUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Background</FormLabel>
+                                <FormControl>
+                                    <ImageUpload
+                                        value={field.value ? [field.value] : []}
+                                        disabled={loading}
+                                        onChange={(url) => field.onChange(url)}
+                                        onRemove={() => field.onChange("")}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+
+                            </FormItem>
+                        )}
+                    />
                     <div className="grid grid-cols-3 gap-8">
                         <FormField
                             control={form.control}
@@ -148,7 +170,6 @@ const BillboardForm: React.FC<BillboardFormProps> = ({
                     </Button>
                 </form>
             </Form>
-            <Separator />
 
 
         </>
