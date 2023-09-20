@@ -6,27 +6,27 @@ import { Billboard } from '@prisma/client'
 
 import Heading from '@/components/ui/heading'
 import { Button } from '@/components/ui/button'
-import { CategoryColumn, columns } from './columns'
+import { SizeColumn, columns } from './columns'
 import { Separator } from '@/components/ui/separator'
 import { DataTable } from '@/components/ui/data-table'
 import ApiList from '@/components/ui/api-list'
 
 
-interface CategoryClientProps {
-    data: CategoryColumn[]
+interface SizeClientProps {
+    data: SizeColumn[]
 }
 
-const CategoryClient = ({ data }: CategoryClientProps) => {
+const SizeClient = ({ data }: SizeClientProps) => {
     const router = useRouter();
     const params = useParams();
     return (
         <>
             <div className='flex items-center justify-between'>
                 <Heading
-                    title={`Categories (${data.length})`}
-                    description='Manage your Categories here'
+                    title={`Sizes (${data.length})`}
+                    description='Manage a Size here'
                 />
-                <Button onClick={() => router.push(`/${params.storeId}/categories/new/`)} >
+                <Button onClick={() => router.push(`/${params.storeId}/sizes/new/`)} >
                     <Plus className='mr-2 h-4 w-4' />
                     Add New
                 </Button>
@@ -36,13 +36,16 @@ const CategoryClient = ({ data }: CategoryClientProps) => {
 
             <Heading
                 title='API'
-                description='Manage Categories API '
+                description='Manage Sizes API '
             />
 
-            <ApiList entityName='categories' entityIdName='{categoryId}' />
+            <ApiList entityName='sizes' entityIdName='{sizeId}' />
+
+
+
         </>
 
     )
 }
 
-export default CategoryClient
+export default SizeClient

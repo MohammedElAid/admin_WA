@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation"
 import axios from "axios"
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { CategoryColumn } from "./columns"
+import { SizeColumn } from "./columns"
 import { Button } from "@/components/ui/button"
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react"
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu"
@@ -12,30 +12,27 @@ import { toast } from "react-hot-toast"
 import AlertModal from "@/components/modals/alert-modal"
 
 interface CellActionProps {
-    data: CategoryColumn
+    data: SizeColumn
 }
 
 
 const CellAction = ({ data }: CellActionProps) => {
     const router = useRouter()
     const params = useParams()
-
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
-
     const onCopy = (id: string) => {
         navigator.clipboard.writeText(id)
-        toast.success("Category Id copied to the clipboard")
+        toast.success("Size Id copied to the clipboard")
     }
-
     const OnDelete = async () => {
         try {
             setLoading(true)
-            await axios.delete(`/api/${params.storeId}/categories/${data.id}`)
+            await axios.delete(`/api/${params.storeId}/sizes/${data.id}`)
             router.refresh()
-            toast.success("Category deleted")
+            toast.success("Size deleted")
         } catch (error) {
-            toast.error("Make sur you removed all Products using this category first")
+            toast.error("Make sur you removed all categories using Billboard first")
         } finally {
             setLoading(false)
             setOpen(false)
@@ -64,7 +61,7 @@ const CellAction = ({ data }: CellActionProps) => {
                         <Copy className="mr-2 h-4 w-4" />
                         CopyId
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push(`/${params.storeId}/categories/${data.id}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/${params.storeId}/billboards/${data.id}`)}>
                         <Edit className="mr-2 h-4 w-4" />
                         Update
                     </DropdownMenuItem>
