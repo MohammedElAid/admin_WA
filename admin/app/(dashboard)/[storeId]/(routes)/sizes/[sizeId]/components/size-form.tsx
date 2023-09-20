@@ -18,11 +18,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import AlertModal from "@/components/modals/alert-modal";
-import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
     name: z.string().min(1, "Required"),
-    value: z.string().min(1,),
+    value: z.string().min(1, "Required"),
 
 })
 
@@ -89,7 +88,7 @@ const SizeForm: React.FC<SizeFormProps> = ({
             router.push(`/${params.storeId}/sizes`)
             toast.success("Size deleted")
         } catch (error) {
-            toast.error("Make sur you removed all categories using Size first")
+            toast.error("Make sur you removed all Products using Size first")
         } finally {
             setLoading(false)
             setOpen(false)
@@ -133,7 +132,25 @@ const SizeForm: React.FC<SizeFormProps> = ({
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Size label"
+                                            placeholder="Size"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="value"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Label</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={loading}
+                                            placeholder="Value"
                                             {...field}
                                         />
                                     </FormControl>

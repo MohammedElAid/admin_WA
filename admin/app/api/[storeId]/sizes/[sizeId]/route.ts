@@ -6,30 +6,30 @@ import prismadb from "@/lib/prismadb";
 
 export async function GET(
     req: Request,
-    { params }: { params: { billboardId: string } }
+    { params }: { params: { sizeId: string } }
 ) {
     try {
 
 
 
-        if (!params.billboardId) {
-            return new NextResponse('billboard id is required', { status: 400 })
+        if (!params.sizeId) {
+            return new NextResponse('size id is required', { status: 400 })
         }
 
 
 
-        const billboard = await prismadb.billboard.findUnique({
+        const size = await prismadb.size.findUnique({
             where: {
-                id: params.billboardId,
+                id: params.sizeId,
             },
 
 
         })
-        return NextResponse.json(billboard)
+        return NextResponse.json(size)
 
 
     } catch (error) {
-        console.log('[BILLBOARD_GET]', error)
+        console.log('[SIZE_GET]', error)
         return new NextResponse('Internal error', { status: 500 })
     }
 
@@ -37,24 +37,24 @@ export async function GET(
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { storeId: string, billboardId: string } }
+    { params }: { params: { storeId: string, sizeId: string } }
 ) {
     try {
         const { userId } = auth()
         const body = await req.json();
-        const { label, imageUrl } = body;
+        const { name, value } = body;
 
         if (!userId) {
             return new NextResponse('Unauthorized', { status: 401 })
         }
-        if (!label) {
+        if (!name) {
             return new NextResponse('Label is required', { status: 400 })
         }
-        if (!imageUrl) {
+        if (!value) {
             return new NextResponse('Image url is required', { status: 400 })
         }
-        if (!params.billboardId) {
-            return new NextResponse('billboard id is required', { status: 400 })
+        if (!params.sizeId) {
+            return new NextResponse('size id is required', { status: 400 })
         }
         const storeByUserId = await prismadb.store.findFirst({
             where: {
@@ -68,19 +68,18 @@ export async function PATCH(
             return new NextResponse('Unauthorized', { status: 403 })
         }
 
-        const billboard = await prismadb.billboard.updateMany({
+        const size = await prismadb.size.updateMany({
             where: {
-                id: params.billboardId,
-
+                id: params.sizeId,
             },
             data: {
-                label,
-                imageUrl,
+                name,
+                value
 
             }
 
         })
-        return NextResponse.json(billboard)
+        return NextResponse.json(size)
 
 
     } catch (error) {
@@ -92,7 +91,7 @@ export async function PATCH(
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { storeId: string, billboardId: string } }
+    { params }: { params: { storeId: string, sizeId: string } }
 ) {
     try {
         const { userId } = auth()
@@ -102,8 +101,8 @@ export async function DELETE(
             return new NextResponse('Unauthorized', { status: 401 })
         }
 
-        if (!params.billboardId) {
-            return new NextResponse('billboard id is required', { status: 400 })
+        if (!params.sizeId) {
+            return new NextResponse('size id is required', { status: 400 })
         }
 
         const storeByUserId = await prismadb.store.findFirst({
@@ -118,19 +117,19 @@ export async function DELETE(
             return new NextResponse('Unauthorized', { status: 403 })
         }
 
-        const billboard = await prismadb.billboard.deleteMany({
+        const size = await prismadb.size.deleteMany({
             where: {
-                id: params.billboardId,
+                id: params.sizeId,
 
             },
 
 
         })
-        return NextResponse.json(billboard)
+        return NextResponse.json(size)
 
 
     } catch (error) {
-        console.log('[BILLBOARD_DELETE]', error)
+        console.log('[SIZE_DELETE]', error)
         return new NextResponse('Internal error', { status: 500 })
     }
 

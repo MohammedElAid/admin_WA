@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation"
 import axios from "axios"
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { SizeColumn } from "./columns"
+import { ColorColumn } from "./columns"
 import { Button } from "@/components/ui/button"
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react"
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu"
@@ -12,7 +12,7 @@ import { toast } from "react-hot-toast"
 import AlertModal from "@/components/modals/alert-modal"
 
 interface CellActionProps {
-    data: SizeColumn
+    data: ColorColumn
 }
 
 
@@ -23,14 +23,14 @@ const CellAction = ({ data }: CellActionProps) => {
     const [open, setOpen] = useState(false)
     const onCopy = (id: string) => {
         navigator.clipboard.writeText(id)
-        toast.success("Size Id copied to the clipboard")
+        toast.success("Color Id copied to the clipboard")
     }
     const OnDelete = async () => {
         try {
             setLoading(true)
-            await axios.delete(`/api/${params.storeId}/sizes/${data.id}`)
+            await axios.delete(`/api/${params.storeId}/colors/${data.id}`)
             router.refresh()
-            toast.success("Size deleted")
+            toast.success("Color deleted")
         } catch (error) {
             toast.error("Make sur you removed all categories using Billboard first")
         } finally {
@@ -61,7 +61,7 @@ const CellAction = ({ data }: CellActionProps) => {
                         <Copy className="mr-2 h-4 w-4" />
                         CopyId
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push(`/${params.storeId}/sizes/${data.id}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/${params.storeId}/colors/${data.id}`)}>
                         <Edit className="mr-2 h-4 w-4" />
                         Update
                     </DropdownMenuItem>
