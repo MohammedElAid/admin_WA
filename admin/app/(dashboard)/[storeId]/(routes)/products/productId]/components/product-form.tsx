@@ -21,8 +21,14 @@ import AlertModal from "@/components/modals/alert-modal";
 import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
-    label: z.string().min(1, "Required"),
-    imageUrl: z.string().min(1,),
+    name: z.string().min(1, "Required"),
+    images: z.object({ url: z.string() }).array(),
+    price: z.coerce.number().min(1, "Required"),
+    categoryId: z.string().min(1, "Required"),
+    colorId: z.string().min(1, "Required"),
+    sizeId: z.string().min(1, "Required"),
+    isFeatured: z.boolean().default(false).optional(),
+    isArchived: z.boolean().default(false).optional()
 
 })
 
@@ -56,9 +62,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     const form = useForm<ProductFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData || {
-            label: "",
-            imageUrl: "",
+        defaultValues: initialData ? {
+            ...initialData, price: parseFloat(String(initialData?.price))
+        } : {
+            name: "",
+            images: [],
+            price: 0,
+            categoryId: "",
+            colorId: "",
+            sizeId: "",
+            isFeatured: false,
+            isArchived: false
         }
     })
     const onSubmit = async (data: ProductFormValues) => {
