@@ -50,6 +50,12 @@ export default function MainNav({
 
         },
         {
+            href: `/${params.storeId}/orders`,
+            label: 'Orders',
+            active: pathname === `/${params.storeId}/products`
+
+        },
+        {
             href: `/${params.storeId}/settings`,
             label: 'Settings',
             active: pathname === `/${params.storeId}/settings`
