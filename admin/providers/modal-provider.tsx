@@ -8,7 +8,7 @@ function ModalProvider() {
 
     useEffect(() => {
         setIsMounted(true)
-    }, [])
+    }, [isMounted])
 
     if (!isMounted) {
         return null
